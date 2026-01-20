@@ -34,7 +34,5 @@
 ## Future Ideas
 
 - [ ] Pre-generate popular cities on server startup
-- [ ] Add more Overpass API endpoints for better load balancing
 - [ ] WebSocket for real-time progress updates instead of polling
 - [ ] Queue system for handling multiple concurrent requests
-- [ ] Thumbnail previews before full generation
