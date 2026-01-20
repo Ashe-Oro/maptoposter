@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -14,8 +15,12 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# Register WebSocket notification callback
-set_notify_callback(notify_job_update)
+
+@app.on_event("startup")
+async def startup_event():
+    """Register WebSocket callback with access to the main event loop."""
+    loop = asyncio.get_running_loop()
+    set_notify_callback(notify_job_update, loop)
 
 # Include routers
 app.include_router(themes.router)

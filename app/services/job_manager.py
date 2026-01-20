@@ -11,11 +11,15 @@ jobs: Dict[str, dict] = {}
 # Callback for WebSocket notifications (set by websocket_manager)
 _notify_callback: Optional[Callable[[str, str, int, Optional[str], Optional[str], Optional[str]], Awaitable[None]]] = None
 
+# Reference to the main event loop (set on app startup)
+_main_loop: Optional[asyncio.AbstractEventLoop] = None
 
-def set_notify_callback(callback):
-    """Set the async callback for WebSocket notifications."""
-    global _notify_callback
+
+def set_notify_callback(callback, loop: asyncio.AbstractEventLoop = None):
+    """Set the async callback for WebSocket notifications and the main event loop."""
+    global _notify_callback, _main_loop
     _notify_callback = callback
+    _main_loop = loop
 
 
 def create_job(request) -> str:
@@ -43,32 +47,21 @@ def update_job(job_id: str, **kwargs):
     jobs[job_id].update(kwargs)
 
     # Notify WebSocket clients asynchronously
-    if _notify_callback:
+    if _notify_callback and _main_loop:
         job = jobs[job_id]
         download_url = f"/api/posters/{job_id}" if job["status"] == JobStatus.COMPLETED else None
 
         try:
-            # Get or create event loop and schedule notification
-            try:
-                loop = asyncio.get_running_loop()
-                asyncio.create_task(_notify_callback(
-                    job_id,
-                    job["status"],
-                    job.get("progress", 0),
-                    job.get("message"),
-                    job.get("error"),
-                    download_url
-                ))
-            except RuntimeError:
-                # No running loop, create one for this call
-                asyncio.run(_notify_callback(
-                    job_id,
-                    job["status"],
-                    job.get("progress", 0),
-                    job.get("message"),
-                    job.get("error"),
-                    download_url
-                ))
+            coro = _notify_callback(
+                job_id,
+                job["status"],
+                job.get("progress", 0),
+                job.get("message"),
+                job.get("error"),
+                download_url
+            )
+            # Schedule the coroutine on the main event loop from any thread
+            asyncio.run_coroutine_threadsafe(coro, _main_loop)
         except Exception as e:
             # Don't let WebSocket errors break job updates
             pass
