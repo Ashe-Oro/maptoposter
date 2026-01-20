@@ -29,12 +29,16 @@ async def websocket_job_status(websocket: WebSocket, job_id: str):
         "download_url": "..."  # optional, on completion
     }
     """
+    # Must accept websocket before we can close it or send messages
+    await websocket.accept()
+
     # Check if job exists
     job = get_job(job_id)
     if not job:
         await websocket.close(code=4004, reason="Job not found")
         return
 
+    # Register this connection to receive broadcasts
     await manager.connect(websocket, job_id)
 
     try:

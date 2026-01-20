@@ -206,19 +206,24 @@ body {
 
 .input-wrapper input {
     width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--ink-medium);
-    padding: var(--space-md) 0 var(--space-xs);
+    background: rgba(245, 240, 232, 0.05);
+    border: 1px solid var(--slate);
+    border-radius: 4px;
+    padding: var(--space-sm) var(--space-sm);
     font-family: var(--font-body);
     font-size: 1rem;
     color: var(--cream);
-    transition: border-color 0.3s var(--ease-out);
+    transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+}
+
+.input-wrapper input::placeholder {
+    color: var(--slate);
 }
 
 .input-wrapper input:focus {
     outline: none;
     border-color: var(--copper);
+    background: rgba(245, 240, 232, 0.08);
 }
 
 .input-wrapper label {
