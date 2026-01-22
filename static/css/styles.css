@@ -1180,15 +1180,33 @@ body {
 @media (max-width: 1024px) {
     .app-container {
         grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
     }
 
     .panel-preview {
-        display: none;
+        min-height: auto;
+        padding: var(--space-lg);
+        order: 2; /* Show below form */
     }
 
     .panel-form {
         border-right: none;
         max-height: none;
+        height: auto;
+        overflow-y: visible;
+        order: 1;
+    }
+
+    .preview-content {
+        display: none; /* Hide live preview on mobile */
+    }
+
+    .result-display {
+        padding: var(--space-md) 0;
+    }
+
+    .result-frame-large img {
+        max-height: 60vh;
     }
 
     .form-header h1 {
@@ -1197,6 +1215,17 @@ body {
 
     .site-footer {
         left: 0; /* Full width on mobile/tablet */
+    }
+
+    /* When result is complete, show poster at top on mobile */
+    .panel-preview:has(.result-display:not(.hidden)) {
+        display: flex;
+        order: 1; /* Poster goes to top */
+    }
+
+    /* Move retheme section below poster on mobile */
+    #result {
+        order: 2;
     }
 }
 
@@ -1208,6 +1237,10 @@ body {
 
     .panel-form {
         padding: var(--space-lg) var(--space-md);
+    }
+
+    .panel-preview {
+        padding: var(--space-md);
     }
 
     .form-header h1 {
@@ -1224,6 +1257,15 @@ body {
 
     .retheme-gallery {
         grid-template-columns: repeat(5, 1fr);
+    }
+
+    .recent-gallery {
+        max-width: 100%;
+        padding: 0 var(--space-sm);
+    }
+
+    .gallery-grid {
+        gap: var(--space-sm);
     }
 }
 
