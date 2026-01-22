@@ -3,14 +3,20 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = join(__dirname, '../../data');
+// Use DATA_DIR env var for consistency with config.js (parent of posters dir)
+const DATA_DIR = process.env.DATA_DIR
+  ? dirname(process.env.DATA_DIR)  // DATA_DIR points to posters subdir, get parent
+  : join(__dirname, '../../data');
 const GALLERY_FILE = join(DATA_DIR, 'gallery.json');
 const POSTERS_DIR = join(__dirname, '../../../posters'); // Bundled posters in repo
 const MAX_ENTRIES = 12;
 
-// Ensure data directory exists
+// Ensure data directory and posters subdirectory exist
 if (!existsSync(DATA_DIR)) {
   mkdirSync(DATA_DIR, { recursive: true });
+}
+if (!existsSync(join(DATA_DIR, 'posters'))) {
+  mkdirSync(join(DATA_DIR, 'posters'), { recursive: true });
 }
 
 // Default gallery entries (bundled posters from the repo)

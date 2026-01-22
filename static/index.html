@@ -25,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/styles.css?v=25">
+    <link rel="stylesheet" href="/static/css/styles.css?v=26">
 </head>
 <body>
     <!-- Grain overlay -->
@@ -166,17 +166,6 @@
             <div class="panel-content result-content">
                 <span class="overline">Your Artwork</span>
                 <h2 class="result-title">Complete</h2>
-                <div class="result-actions">
-                    <a id="download-btn" class="btn-download" download>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                        </svg>
-                        Download Image
-                    </a>
-                    <button id="new-poster-btn" class="btn-new">
-                        Create Another
-                    </button>
-                </div>
                 <div class="retheme-section">
                     <h3>Try a Different Theme</h3>
                     <div id="retheme-gallery" class="theme-gallery retheme-gallery"></div>
@@ -248,7 +237,18 @@
                 </div>
                 <div class="result-caption">
                     <span class="caption-label">Your Artwork</span>
-                    <span class="caption-note">Click to download full resolution</span>
+                    <span class="caption-note">Click image to enlarge</span>
+                </div>
+                <div class="result-actions">
+                    <a id="download-btn" class="btn-download" download>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                        </svg>
+                        Download Image
+                    </a>
+                    <button id="new-poster-btn" class="btn-new">
+                        Create Another
+                    </button>
                 </div>
             </div>
 

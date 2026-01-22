@@ -6,7 +6,11 @@ import sharp from 'sharp';
 import { getRecentPosters, getPosterPath } from '../services/galleryManager.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const THUMBNAIL_DIR = join(__dirname, '../../data/thumbnails');
+// Use DATA_DIR env var for consistency (parent of posters dir)
+const DATA_BASE = process.env.DATA_DIR
+  ? dirname(process.env.DATA_DIR)
+  : join(__dirname, '../../data');
+const THUMBNAIL_DIR = join(DATA_BASE, 'thumbnails');
 const THUMBNAIL_HEIGHT = 300; // Height in pixels, width auto-scaled
 
 // Ensure thumbnail directory exists
