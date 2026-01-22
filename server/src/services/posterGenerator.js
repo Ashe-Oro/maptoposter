@@ -82,6 +82,19 @@ export async function generatePoster(jobId, request) {
     });
 
     let stderr = '';
+    let killed = false;
+
+    // 5 minute timeout
+    const timeout = setTimeout(() => {
+      killed = true;
+      childProcess.kill('SIGTERM');
+      console.error(`[Job ${jobId}] Killed due to timeout (5 minutes)`);
+      updateJob(jobId, {
+        status: JobStatus.FAILED,
+        error: 'Generation timed out after 5 minutes',
+      });
+      reject(new Error('Generation timed out after 5 minutes'));
+    }, 5 * 60 * 1000);
 
     childProcess.stdout.on('data', (data) => {
       const output = data.toString().trim();
@@ -128,6 +141,9 @@ export async function generatePoster(jobId, request) {
     });
 
     childProcess.on('close', (code) => {
+      clearTimeout(timeout);
+      if (killed) return; // Already handled by timeout
+
       if (code === 0) {
         console.log(`[Job ${jobId}] Completed successfully`);
 
@@ -163,6 +179,8 @@ export async function generatePoster(jobId, request) {
     });
 
     childProcess.on('error', (error) => {
+      clearTimeout(timeout);
+      if (killed) return;
       console.error(`[Job ${jobId}] Process error:`, error);
       updateJob(jobId, {
         status: JobStatus.FAILED,
