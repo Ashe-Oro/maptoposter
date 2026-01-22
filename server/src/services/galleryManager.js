@@ -175,8 +175,17 @@ export function addToGallery(jobId, request, themeInfo = {}) {
 export function getRecentPosters(limit = MAX_ENTRIES) {
   const userEntries = loadGallery();
 
-  // Combine user entries with defaults (user entries first)
-  const combined = [...userEntries];
+  // Filter out entries where the image file no longer exists
+  const validUserEntries = userEntries.filter(entry => {
+    const hasImage = getPosterPath(entry.jobId) !== null;
+    if (!hasImage) {
+      console.log(`[Gallery] Filtering out orphaned entry: ${entry.jobId} (${entry.city})`);
+    }
+    return hasImage;
+  });
+
+  // Combine valid user entries with defaults (user entries first)
+  const combined = [...validUserEntries];
 
   // Add default posters to fill remaining slots
   const remaining = limit - combined.length;
