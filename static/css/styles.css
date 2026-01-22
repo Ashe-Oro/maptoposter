@@ -1360,7 +1360,7 @@ appkit-button::part(button) {
     padding-top: var(--space-lg);
     border-top: 1px solid var(--ink-medium);
     width: 100%;
-    max-width: 800px;
+    max-width: 1000px;
 }
 
 .gallery-header {
@@ -1411,7 +1411,7 @@ appkit-button::part(button) {
 
 .gallery-item-img {
     display: block;
-    height: 180px;
+    height: 260px;
     width: auto;
     object-fit: contain;
     transition: transform 0.3s var(--ease-out);
@@ -1460,7 +1460,7 @@ appkit-button::part(button) {
 
 @media (max-width: 600px) {
     .gallery-item-img {
-        height: 140px;
+        height: 200px;
     }
 }
 
