@@ -22,7 +22,18 @@ ENV/
 # Data and output
 data/posters/*.png
 posters/*.png
+
+# Cache - ignore all except pre-cached cities
 cache/*
+!cache/amsterdam_netherlands_12000/
+!cache/barcelona_spain_12000/
+!cache/charleston_south_carolina_united_states_12000/
+!cache/charlotte_north_carolina_united_states_12000/
+!cache/dubai_uae_12000/
+!cache/raleigh_north_carolina_united_states_12000/
+!cache/rome_italy_12000/
+!cache/singapore_singapore_12000/
+!cache/venice_italy_12000/
 
 # OS
 .DS_Store

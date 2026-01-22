@@ -1,0 +1,10 @@
+{
+  "city": "Barcelona",
+  "country": "Spain",
+  "distance": 12000,
+  "coords": [
+    41.3825802,
+    2.177073
+  ],
+  "cached_at": "2026-01-22T13:28:47.107863"
+}
