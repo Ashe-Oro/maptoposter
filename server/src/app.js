@@ -35,7 +35,10 @@ export function createApp(options = {}) {
   }
 
   // Middleware
-  app.use(cors());
+  // CORS must expose x402 headers for the payment flow to work
+  app.use(cors({
+    exposedHeaders: ['PAYMENT-REQUIRED', 'PAYMENT-RESPONSE', 'X-PAYMENT']
+  }));
   app.use(express.json());
 
   // Serve static files
