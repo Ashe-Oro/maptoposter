@@ -15,7 +15,7 @@ async def create_poster(request: PosterRequest, background_tasks: BackgroundTask
     """
     Create a new poster generation job.
 
-    Requires $0.75 USDC payment via x402 protocol.
+    Requires $0.10 USDC payment via x402 protocol.
     Generation takes 30-60 seconds. Poll /api/jobs/{job_id} for status.
     """
     # Validate theme exists

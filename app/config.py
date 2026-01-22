@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     buyer_private_key: Optional[str] = None  # For testing x402 payments
 
     # Pricing
-    poster_price: float = 0.75
+    poster_price: float = 0.10
 
     # Storage - defaults to local, override with DATA_DIR=/data/posters in production
     data_dir: Path = Path(__file__).parent.parent / "data" / "posters"

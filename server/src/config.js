@@ -56,7 +56,7 @@ export const config = {
   testnetBuyerPublicKey: process.env.TESTNET_BUYER_PUBLIC_KEY,
 
   // Pricing (in dollars)
-  posterPrice: process.env.POSTER_PRICE || '0.75',
+  posterPrice: process.env.POSTER_PRICE || '0.10',
 
   // Storage
   dataDir: process.env.DATA_DIR || join(__dirname, '../../data/posters'),
