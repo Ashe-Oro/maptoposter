@@ -766,9 +766,20 @@ function showResult(job) {
     document.getElementById('result-image').src = imageUrl;
     document.getElementById('download-btn').href = imageUrl;
 
-    // Make the result image clickable to download
+    // Make the result image clickable to open in lightbox
     document.getElementById('result-image').onclick = () => {
-        window.open(imageUrl, '_blank');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+
+        lightboxImage.src = imageUrl;
+        lightboxCaption.innerHTML = `
+            <div class="caption-city">${lastRequest?.city || 'Your City'}, ${lastRequest?.country || ''}</div>
+            <div class="caption-theme">${currentTheme?.name || lastRequest?.theme || ''}</div>
+        `;
+
+        lightbox.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
     };
 
     // Highlight current theme in retheme gallery
