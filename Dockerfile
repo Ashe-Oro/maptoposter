@@ -19,15 +19,18 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Create data directory
-RUN mkdir -p /data/posters
+# Create data directory with permissive permissions
+RUN mkdir -p /data/posters && chmod 777 /data/posters
 
 # Expose port
 EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
+# Make start script executable
+RUN chmod +x /app/start.sh
 
-# Run with uvicorn
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Health check - longer start-period for heavy geo library imports
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run with bash to ensure PORT variable expansion
+CMD ["/bin/bash", "/app/start.sh"]

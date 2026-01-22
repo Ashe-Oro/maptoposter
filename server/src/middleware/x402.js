@@ -5,7 +5,7 @@ import { generateJwt } from '@coinbase/cdp-sdk/auth';
 import { config } from '../config.js';
 
 // Debug flag - set to true to see detailed facilitator logs
-const DEBUG_X402 = true;
+const DEBUG_X402 = false;
 
 /**
  * Create auth headers generator function for CDP facilitator.
