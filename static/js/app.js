@@ -300,7 +300,19 @@ async function searchLocations(query) {
         const data = await response.json();
 
         if (data.features && data.features.length > 0) {
-            resultsDiv.innerHTML = data.features.map((feature, index) => {
+            // Filter out states, counties, and countries - only keep cities and smaller
+            const excludedTypes = ['state', 'county', 'country', 'administrative'];
+            const filteredFeatures = data.features.filter(feature => {
+                const type = feature.properties.type || feature.properties.osm_value || '';
+                return !excludedTypes.includes(type.toLowerCase());
+            });
+
+            if (filteredFeatures.length === 0) {
+                resultsDiv.innerHTML = '<div class="autocomplete-loading">No cities found. Try a more specific search.</div>';
+                return;
+            }
+
+            resultsDiv.innerHTML = filteredFeatures.map((feature, index) => {
                 const props = feature.properties;
                 const name = props.name || '';
                 const city = props.city || props.name || '';
@@ -318,8 +330,8 @@ async function searchLocations(query) {
                 `;
             }).join('');
 
-            // Store features for selection
-            resultsDiv.dataset.features = JSON.stringify(data.features);
+            // Store filtered features for selection
+            resultsDiv.dataset.features = JSON.stringify(filteredFeatures);
 
             // Add click handlers
             resultsDiv.querySelectorAll('.autocomplete-item').forEach(item => {
