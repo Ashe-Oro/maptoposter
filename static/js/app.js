@@ -556,6 +556,7 @@ async function submitPosterRequest(request, hideSection) {
         startStatusTimer();
 
         // Connect WebSocket for real-time updates
+        wsReconnectAttempts = 0;
         connectJobWebSocket(currentJobId);
 
     } catch (error) {
@@ -606,6 +607,9 @@ async function applyNewTheme() {
 }
 
 // Connect to WebSocket for real-time job updates
+let wsReconnectAttempts = 0;
+const MAX_RECONNECT_ATTEMPTS = 3;
+
 function connectJobWebSocket(jobId) {
     // Determine WebSocket URL (ws:// or wss:// based on current protocol)
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -616,10 +620,17 @@ function connectJobWebSocket(jobId) {
 
     websocket.onopen = () => {
         console.log('WebSocket connected');
+        wsReconnectAttempts = 0; // Reset on successful connection
     };
 
     websocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
+
+        // Handle heartbeat pings (ignore them)
+        if (data.type === 'ping') {
+            return;
+        }
+
         console.log('WebSocket message:', data);
 
         if (data.type === 'job_update') {
@@ -629,13 +640,30 @@ function connectJobWebSocket(jobId) {
 
     websocket.onerror = (error) => {
         console.error('WebSocket error:', error);
-        // Fall back to polling if WebSocket fails
-        fallbackToPolling();
     };
 
     websocket.onclose = (event) => {
         console.log('WebSocket closed:', event.code, event.reason);
         websocket = null;
+
+        // Don't reconnect if it was a clean close (1000) or job is done
+        if (event.code === 1000 || !currentJobId) {
+            return;
+        }
+
+        // Try to reconnect on unexpected close (1006, etc.)
+        if (wsReconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+            wsReconnectAttempts++;
+            console.log(`WebSocket reconnecting... attempt ${wsReconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}`);
+            setTimeout(() => {
+                if (currentJobId) {
+                    connectJobWebSocket(currentJobId);
+                }
+            }, 2000 * wsReconnectAttempts); // Exponential backoff: 2s, 4s, 6s
+        } else {
+            console.log('Max reconnect attempts reached, falling back to polling');
+            fallbackToPolling();
+        }
     };
 }
 

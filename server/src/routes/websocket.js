@@ -48,6 +48,13 @@ export function setupWebSocket(app) {
     }
     connections.get(jobId).add(ws);
 
+    // Heartbeat to keep connection alive (every 30 seconds)
+    const heartbeat = setInterval(() => {
+      if (ws.readyState === 1) { // OPEN
+        ws.send(JSON.stringify({ type: 'ping' }));
+      }
+    }, 30000);
+
     // Send current job status immediately
     const job = getJob(jobId);
     if (job) {
@@ -65,6 +72,7 @@ export function setupWebSocket(app) {
     // Handle client disconnect
     ws.on('close', () => {
       console.log(`[WebSocket] Client disconnected for job ${jobId}`);
+      clearInterval(heartbeat);
       const jobConnections = connections.get(jobId);
       if (jobConnections) {
         jobConnections.delete(ws);
