@@ -615,6 +615,7 @@ body {
     align-items: flex-start;
     justify-content: center;
     padding: var(--space-xl);
+    padding-right: 0; /* Scrollbar flush with viewport edge */
     position: relative;
     overflow-y: auto;
     height: 100vh;
@@ -632,6 +633,7 @@ body {
     text-align: center;
     max-height: 100%;
     overflow-y: auto;
+    padding-right: var(--space-xl); /* Compensate for panel's removed right padding */
 }
 
 .preview-frame {
@@ -790,7 +792,7 @@ body {
 
 .deco-br {
     bottom: var(--space-lg);
-    right: var(--space-lg);
+    right: calc(var(--space-lg) + 8px); /* Account for scrollbar */
     border-left: none;
     border-top: none;
 }
@@ -961,6 +963,7 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
+    padding-right: var(--space-xl); /* Compensate for panel's removed right padding */
 }
 
 .result-frame-large {
