@@ -1,12 +1,12 @@
 FROM python:3.11-slim
 
 # Cache buster - change this value to force a full rebuild
-ARG CACHE_BUST=4
+ARG CACHE_BUST=5
 
 # Build-time arg for Vite environment variables
 ARG VITE_WALLETCONNECT_PROJECT_ID
 
-# Install system dependencies for geopandas, osmnx, matplotlib AND Node.js
+# Install system dependencies for geopandas, osmnx, matplotlib
 RUN apt-get update && apt-get install -y \
     libgdal-dev \
     libgeos-dev \
@@ -14,19 +14,26 @@ RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     curl \
-    nodejs \
-    npm \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 22 (required by server)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy requirements and install Python dependencies
+# Copy requirements and install Python dependencies (for map generation)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy package files and install Node dependencies
+# Copy root package files and install frontend dependencies
 COPY package.json package-lock.json ./
 RUN npm install
+
+# Copy server package files and install server dependencies
+COPY server/package.json server/package-lock.json ./server/
+RUN cd server && npm install
 
 # Copy application code
 COPY . .
@@ -41,12 +48,9 @@ RUN mkdir -p /data/posters && chmod 777 /data/posters
 # Expose port
 EXPOSE 8000
 
-# Make start script executable
-RUN chmod +x /app/start.sh
-
-# Health check - longer start-period for heavy geo library imports
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Run the Python start script
-CMD ["python", "/app/start.sh"]
+# Run the Node.js server (which spawns Python for map generation)
+CMD ["node", "server/src/index.js"]

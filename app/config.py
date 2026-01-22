@@ -5,10 +5,10 @@ from pathlib import Path
 
 class Settings(BaseSettings):
     # x402 Payment
-    pay_to_address: str = "0x0000000000000000000000000000000000000000"
-    x402_network: str = "base-sepolia"
+    pay_to_address: str = "0x8A9913c6b40E8bb9015435c232D808394e6936d7"
+    x402_network: str = "base"
     network_id: Optional[str] = None  # Alternative: eip155:84532 for base-sepolia
-    facilitator_url: str = "https://x402.org/facilitator"
+    facilitator_url: str = "https://api.cdp.coinbase.com/platform/v2/x402"
     buyer_private_key: Optional[str] = None  # For testing x402 payments
 
     # Pricing
