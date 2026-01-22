@@ -32,5 +32,5 @@ RUN chmod +x /app/start.sh
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Run with bash to ensure PORT variable expansion
-CMD ["/bin/bash", "/app/start.sh"]
+# Run the Python start script
+CMD ["python", "/app/start.sh"]
