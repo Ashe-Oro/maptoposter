@@ -630,7 +630,7 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    order: 0; /* Display first (live preview on desktop) */
+    order: 0; /* Display first when visible */
 }
 
 .preview-frame {
@@ -966,6 +966,7 @@ body {
 }
 
 .result-header {
+    display: none; /* Hidden on desktop - shown via left panel #result */
     margin-bottom: var(--space-lg);
     text-align: center;
 }
@@ -978,11 +979,11 @@ body {
     margin-bottom: 0;
 }
 
-/* Retheme Container in Right Panel */
+/* Retheme Container in Right Panel - mobile only */
 .retheme-container {
+    display: none; /* Hidden on desktop - shown via left panel #result */
     width: 100%;
     max-width: 500px;
-    order: 2; /* Between result and gallery */
     margin-top: var(--space-lg);
 }
 
@@ -1214,6 +1215,7 @@ body {
     .panel-preview {
         display: flex;
         flex-direction: column;
+        align-items: center;
         min-height: auto;
         padding: var(--space-lg);
         order: 2; /* Show below form */
@@ -1237,8 +1239,28 @@ body {
         display: none !important;
     }
 
+    /* Show mobile-only result header */
+    .result-header {
+        display: block;
+    }
+
+    /* Show mobile-only retheme container */
+    .retheme-container:not(.hidden) {
+        display: block;
+    }
+
+    /* Mobile ordering for result view */
     .result-display {
+        order: 1;
         padding: var(--space-md) 0;
+    }
+
+    .retheme-container {
+        order: 2;
+    }
+
+    .recent-gallery {
+        order: 3;
     }
 
     .result-frame-large img {
@@ -1251,17 +1273,6 @@ body {
 
     .site-footer {
         left: 0; /* Full width on mobile/tablet */
-    }
-
-    /* When result is complete, show poster at top on mobile */
-    .panel-preview:has(.result-display:not(.hidden)) {
-        display: flex;
-        order: 1; /* Poster goes to top */
-    }
-
-    /* Move retheme section below poster on mobile */
-    #result {
-        order: 2;
     }
 }
 
@@ -1440,7 +1451,7 @@ appkit-button::part(button) {
     border-top: 1px solid var(--ink-medium);
     width: 100%;
     max-width: 1000px;
-    order: 3; /* Display below result */
+    order: 2; /* Display below result */
 }
 
 .gallery-header {
