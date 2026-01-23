@@ -4,6 +4,7 @@ const API_BASE = '';
 const PHOTON_API = 'https://photon.komoot.io/api';
 let currentJobId = null;
 let websocket = null;  // WebSocket connection
+let jobFinished = false;  // Flag to prevent reconnect after job completes
 let searchTimeout = null;
 let selectedLocation = null;
 let lastRequest = null;  // Store last request for re-theming
@@ -568,6 +569,7 @@ async function submitPosterRequest(request, hideSection) {
 
         const result = await response.json();
         currentJobId = result.job_id;
+        jobFinished = false;  // Reset for new job
 
         document.getElementById('status-text').textContent = 'Payment confirmed! Connecting to server...';
         startStatusTimer();
@@ -663,8 +665,8 @@ function connectJobWebSocket(jobId) {
         console.log('WebSocket closed:', event.code, event.reason);
         websocket = null;
 
-        // Don't reconnect if it was a clean close (1000) or job is done
-        if (event.code === 1000 || !currentJobId) {
+        // Don't reconnect if it was a clean close (1000), job is done, or job finished
+        if (event.code === 1000 || !currentJobId || jobFinished) {
             return;
         }
 
@@ -718,6 +720,7 @@ function handleJobUpdate(data) {
         case 'completed':
             stopTitleRotation();
             stopStatusTimer();
+            jobFinished = true;  // Prevent reconnect attempts
             closeWebSocket();
             showResult({
                 job_id: data.job_id,
@@ -729,6 +732,7 @@ function handleJobUpdate(data) {
         case 'failed':
             stopTitleRotation();
             stopStatusTimer();
+            jobFinished = true;  // Prevent reconnect attempts
             closeWebSocket();
             document.getElementById('status-text').textContent =
                 `Generation failed: ${data.error || 'Unknown error'}`;
